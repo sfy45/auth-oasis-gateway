@@ -1,115 +1,33 @@
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import DashboardMetricCard from "@/components/DashboardMetricCard";
 import DashboardInsightCard from "@/components/DashboardInsightCard";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import { Shield, AlertTriangle, CheckCircle, Activity, DollarSign, FileBarChart } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [subscriberLoading, setSubscriberLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { addNotification } = useNotifications();
 
-  // Fetch user profile
+  // Add login notification
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-          
-        if (error) throw error;
-        setProfile(data);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
-
-    // Check subscription status
-    const checkSubscription = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('subscribers')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-          
-        if (error && error.code !== 'PGRST116') throw error;
-        setIsSubscribed(!!data);
-      } catch (error) {
-        console.error('Error checking subscription:', error);
+    const addLoginNotification = async () => {
+      if (user) {
+        try {
+          await addNotification("Welcome to your dashboard", "success");
+        } catch (error) {
+          console.error("Error adding login notification:", error);
+        }
       }
     };
     
-    if (user) {
-      fetchProfile();
-      checkSubscription();
-    }
-  }, [user]);
-
-  const handleSubscribe = async () => {
-    if (!user) return;
-    
-    setSubscriberLoading(true);
-    try {
-      if (isSubscribed) {
-        // Unsubscribe
-        const { error } = await supabase
-          .from('subscribers')
-          .delete()
-          .eq('user_id', user.id);
-          
-        if (error) throw error;
-        
-        toast({
-          title: "Unsubscribed",
-          description: "You have been unsubscribed from updates",
-        });
-        
-        setIsSubscribed(false);
-      } else {
-        // Subscribe
-        const { error } = await supabase
-          .from('subscribers')
-          .insert({ 
-            user_id: user.id, 
-            email: user.email 
-          });
-          
-        if (error) throw error;
-        
-        toast({
-          title: "Subscribed",
-          description: "You have been subscribed to updates",
-        });
-        
-        setIsSubscribed(true);
-      }
-    } catch (error) {
-      console.error('Error updating subscription:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update subscription",
-        variant: "destructive",
-      });
-    } finally {
-      setSubscriberLoading(false);
-    }
-  };
+    addLoginNotification();
+  }, [user, addNotification]);
 
   if (isLoading) {
     return (
@@ -131,7 +49,7 @@ const Index = () => {
       <div className="flex flex-1">
         <DashboardSidebar />
         
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             {/* Dashboard Header */}
             <div className="mb-6">
@@ -140,7 +58,7 @@ const Index = () => {
             </div>
             
             {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
               <DashboardMetricCard 
                 title="Severity Risks" 
                 value="0" 

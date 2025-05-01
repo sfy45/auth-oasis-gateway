@@ -48,6 +48,16 @@ const createEmailTemplate = (type: string, data: any) => {
           <p>Best regards,<br>IRMAI Team</p>
         `,
       };
+    case "subscription":
+      return {
+        subject: "Subscription Confirmation - IRMAI",
+        html: `
+          <h1>Subscription Confirmation</h1>
+          <p>Hello,</p>
+          <p>Thank you for subscribing to updates from IRMAI. You'll now receive notifications about new features, updates, and important announcements.</p>
+          <p>Best regards,<br>IRMAI Team</p>
+        `,
+      };
     default:
       return {
         subject: "Notification from IRMAI",

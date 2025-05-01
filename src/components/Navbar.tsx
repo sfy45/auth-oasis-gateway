@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import NotificationDropdown from "@/components/NotificationDropdown";
+import { useNotifications } from "@/hooks/useNotifications";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const { user, signOut } = useAuth();
@@ -28,6 +31,7 @@ const Navbar = () => {
   const [subscriberLoading, setSubscriberLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     // Fetch user profile
@@ -90,6 +94,8 @@ const Navbar = () => {
           title: "Unsubscribed",
           description: "You have been unsubscribed from updates",
         });
+
+        addNotification("You have unsubscribed from updates", "info");
         
         setIsSubscribed(false);
       } else {
@@ -107,6 +113,24 @@ const Navbar = () => {
           title: "Subscribed",
           description: "You have been subscribed to updates",
         });
+
+        addNotification("You have subscribed to updates", "subscription");
+        
+        // Call send-email function
+        try {
+          const { data: emailData, error: emailError } = await supabase.functions.invoke("send-email", {
+            body: {
+              type: "subscription",
+              recipients: [{ email: user.email }],
+              data: { email: user.email }
+            }
+          });
+          
+          if (emailError) console.error("Email error:", emailError);
+          else console.log("Email sent:", emailData);
+        } catch (emailError) {
+          console.error("Error sending subscription email:", emailError);
+        }
         
         setIsSubscribed(true);
       }
@@ -123,6 +147,15 @@ const Navbar = () => {
   };
 
   const handleSignOut = async () => {
+    // Add notification before signing out
+    if (user) {
+      try {
+        await addNotification("You have been signed out", "info");
+      } catch (error) {
+        console.error("Error adding sign out notification:", error);
+      }
+    }
+    
     await signOut();
     navigate("/auth");
   };
@@ -167,25 +200,21 @@ const Navbar = () => {
             <span className="hidden sm:inline">Report Incident</span>
           </Button>
           
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSubscribe}
-              disabled={subscriberLoading}
-              className="mr-2"
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="outline" 
-              size="sm"
-              onClick={handleSubscribe}
-              disabled={subscriberLoading}
-            >
-              {isSubscribed ? "Unsubscribe" : "Subscribe to Updates"}
-            </Button>
-          </div>
+          {user && (
+            <div className="flex items-center">
+              <NotificationDropdown />
+              
+              <Button
+                variant="outline" 
+                size="sm"
+                onClick={handleSubscribe}
+                disabled={subscriberLoading}
+                className="ml-2"
+              >
+                {isSubscribed ? "Unsubscribe" : "Subscribe to Updates"}
+              </Button>
+            </div>
+          )}
           
           {user ? (
             <DropdownMenu>
@@ -195,15 +224,16 @@ const Navbar = () => {
                   size="sm"
                   className="rounded-full h-9 w-9 p-0 font-semibold"
                 >
-                  {profile?.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={user.email}
-                      className="h-full w-full rounded-full object-cover"
+                  <Avatar className="h-full w-full">
+                    <AvatarImage 
+                      src={profile?.avatar_url} 
+                      alt={user.email || ''} 
+                      className="h-full w-full rounded-full object-cover" 
                     />
-                  ) : (
-                    getInitials(user.email || '')
-                  )}
+                    <AvatarFallback className="bg-blue-100 text-blue-600">
+                      {getInitials(user.email || '')}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -214,10 +244,10 @@ const Navbar = () => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">Sign Out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

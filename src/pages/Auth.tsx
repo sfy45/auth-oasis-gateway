@@ -57,15 +57,31 @@ const Auth = () => {
           description: "Check your email for the login link",
         });
       } else if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) throw error;
+        
+        // Add notification if we have user data
+        if (data.user) {
+          try {
+            // We can't use the hook here since we're not in the provider context yet
+            await supabase.from("notifications").insert({
+              user_id: data.user.id,
+              message: "You have successfully signed in",
+              type: "success",
+              read: false,
+            });
+          } catch (notifError) {
+            console.error("Error adding signin notification:", notifError);
+          }
+        }
+        
         navigate("/");
       } else if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -83,6 +99,23 @@ const Auth = () => {
           title: "Account created",
           description: "Please check your email to verify your account",
         });
+        
+        // Send welcome email
+        if (data.user) {
+          try {
+            const { error: emailError } = await supabase.functions.invoke("send-email", {
+              body: {
+                type: "welcome",
+                recipients: [{ email: email }],
+                data: { email: email }
+              }
+            });
+            
+            if (emailError) console.error("Error sending welcome email:", emailError);
+          } catch (emailError) {
+            console.error("Error sending welcome email:", emailError);
+          }
+        }
       } else if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/auth?reset=true`,
@@ -94,6 +127,21 @@ const Auth = () => {
           title: "Password reset email sent",
           description: "Check your email for the password reset link",
         });
+        
+        // Send password reset email
+        try {
+          const { error: emailError } = await supabase.functions.invoke("send-email", {
+            body: {
+              type: "password-reset",
+              recipients: [{ email: email }],
+              data: { email: email }
+            }
+          });
+          
+          if (emailError) console.error("Error sending reset email:", emailError);
+        } catch (emailError) {
+          console.error("Error sending reset email:", emailError);
+        }
       } else if (mode === "update-password") {
         if (password !== confirmPassword) {
           throw new Error("Passwords do not match");
@@ -110,7 +158,10 @@ const Auth = () => {
           description: "Your password has been updated successfully",
         });
 
-        setMode("signin");
+        // Add a small delay to show the toast before redirecting
+        setTimeout(() => {
+          setMode("signin");
+        }, 1500);
       }
     } catch (err: any) {
       setError(err.message);
@@ -237,7 +288,7 @@ const Auth = () => {
               </Button>
             </form>
             
-            {(mode === "signin" || mode === "signup" || mode === "magic" || mode === "reset") && (
+            {mode !== "update-password" && (
               <>
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
@@ -317,6 +368,19 @@ const Auth = () => {
             )}
             
             {(mode === "magic" || mode === "reset") && (
+              <p className="text-center text-sm text-gray-600">
+                Remember your password?{" "}
+                <button
+                  type="button"
+                  className="text-primary font-medium hover:underline"
+                  onClick={() => setMode("signin")}
+                >
+                  Sign in
+                </button>
+              </p>
+            )}
+            
+            {mode === "update-password" && (
               <p className="text-center text-sm text-gray-600">
                 Remember your password?{" "}
                 <button
