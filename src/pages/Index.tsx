@@ -8,8 +8,7 @@ import DashboardMetricCard from "@/components/DashboardMetricCard";
 import DashboardInsightCard from "@/components/DashboardInsightCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Bell, Search, Upload, Shield, AlertTriangle, CheckCircle, Activity, DollarSign, FileBarChart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Shield, AlertTriangle, CheckCircle, Activity, DollarSign, FileBarChart } from "lucide-react";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
@@ -86,7 +85,10 @@ const Index = () => {
         // Subscribe
         const { error } = await supabase
           .from('subscribers')
-          .insert({ user_id: user.id, email: user.email });
+          .insert({ 
+            user_id: user.id, 
+            email: user.email 
+          });
           
         if (error) throw error;
         
@@ -144,42 +146,56 @@ const Index = () => {
                 value="0" 
                 icon={<Shield className="text-blue-600" />}
                 borderColor="border-red-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Open Risks" 
                 value="0" 
                 icon={<AlertTriangle className="text-yellow-500" />}
                 borderColor="border-yellow-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Compliance Score" 
                 value="0%" 
                 icon={<CheckCircle className="text-green-500" />}
                 borderColor="border-green-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Critical Process Steps" 
                 value="0" 
                 icon={<Activity className="text-blue-500" />}
                 borderColor="border-blue-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Total Potential Loss" 
                 value="$0" 
                 icon={<DollarSign className="text-blue-500" />}
                 borderColor="border-blue-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Control Failures" 
                 value="0%" 
                 icon={<FileBarChart className="text-purple-500" />}
                 borderColor="border-purple-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
               <DashboardMetricCard 
                 title="Scenario Analysis" 
                 value="0" 
                 icon={<FileBarChart className="text-teal-500" />}
                 borderColor="border-teal-300"
+                trendValue="0% from last month"
+                trendDirection="neutral"
               />
             </div>
             

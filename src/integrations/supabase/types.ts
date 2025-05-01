@@ -33,6 +33,18 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribers: {
+        Row: {
+          "-- Create a table for subscribers": string | null
+        }
+        Insert: {
+          "-- Create a table for subscribers"?: string | null
+        }
+        Update: {
+          "-- Create a table for subscribers"?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,15 +22,19 @@ const Auth = () => {
   const { toast } = useToast();
 
   // Extract token from URL for password reset
-  const getResetToken = () => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    if (token) {
-      setMode("update-password");
-      return token;
-    }
-    return null;
-  };
+  useEffect(() => {
+    const getResetToken = () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      if (token) {
+        setMode("update-password");
+        return token;
+      }
+      return null;
+    };
+    
+    getResetToken();
+  }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,11 +138,6 @@ const Auth = () => {
     }
   };
 
-  // Check for password reset token on component mount
-  useState(() => {
-    getResetToken();
-  });
-
   const getTitle = () => {
     switch (mode) {
       case "signin": return "Sign In";
@@ -238,7 +237,7 @@ const Auth = () => {
               </Button>
             </form>
             
-            {mode !== "update-password" && (
+            {(mode === "signin" || mode === "signup" || mode === "magic" || mode === "reset") && (
               <>
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">

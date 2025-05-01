@@ -96,7 +96,10 @@ const Navbar = () => {
         // Subscribe
         const { error } = await supabase
           .from('subscribers')
-          .insert({ user_id: user.id, email: user.email });
+          .insert({ 
+            user_id: user.id, 
+            email: user.email 
+          });
           
         if (error) throw error;
         
@@ -199,7 +202,7 @@ const Navbar = () => {
                       className="h-full w-full rounded-full object-cover"
                     />
                   ) : (
-                    getInitials(user.email)
+                    getInitials(user.email || '')
                   )}
                 </Button>
               </DropdownMenuTrigger>

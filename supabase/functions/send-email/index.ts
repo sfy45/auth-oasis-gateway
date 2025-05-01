@@ -26,6 +26,28 @@ const createEmailTemplate = (type: string, data: any) => {
           <p>Best regards,<br>IRMAI Team</p>
         `,
       };
+    case "welcome":
+      return {
+        subject: "Welcome to IRMAI",
+        html: `
+          <h1>Welcome to IRMAI</h1>
+          <p>Hello ${data.email},</p>
+          <p>Thank you for registering with IRMAI - your Intelligent Risk Management AI platform.</p>
+          <p>We're excited to have you on board. Click the verification link in your other email to get started.</p>
+          <p>Best regards,<br>IRMAI Team</p>
+        `,
+      };
+    case "password-reset":
+      return {
+        subject: "Password Reset Request - IRMAI",
+        html: `
+          <h1>Password Reset Request</h1>
+          <p>Hello,</p>
+          <p>We received a request to reset your password for your IRMAI account. Click on the link in your other email to reset your password.</p>
+          <p>If you did not request this change, please contact our support team immediately.</p>
+          <p>Best regards,<br>IRMAI Team</p>
+        `,
+      };
     default:
       return {
         subject: "Notification from IRMAI",
