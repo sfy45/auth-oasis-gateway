@@ -91,7 +91,7 @@ serve(async (req) => {
     
     const emailPromises = recipients.map(recipient => 
       resend.emails.send({
-        from: "IRMAI <info@irmai.io>",
+        from: "IRMAI <IRMAI-info@irmai.io>",
         to: [recipient.email],
         subject: template.subject,
         html: template.html,

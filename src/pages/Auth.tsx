@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "signin" | "signup" | "magic" | "reset" | "update-password";
 
@@ -20,21 +21,35 @@ const Auth = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // Extract token from URL for password reset
   useEffect(() => {
-    const getResetToken = () => {
+    const checkForResetToken = () => {
+      // Check for token in URL
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
-      if (token) {
+      const type = params.get("type");
+      
+      if (token && type === "recovery") {
         setMode("update-password");
-        return token;
+      } else if (params.get("reset") === "true") {
+        toast({
+          title: "Check your email",
+          description: "We've sent you a password reset link",
+        });
       }
-      return null;
     };
     
-    getResetToken();
-  }, []);
+    checkForResetToken();
+  }, [toast]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +162,10 @@ const Auth = () => {
           throw new Error("Passwords do not match");
         }
 
+        if (password.length < 6) {
+          throw new Error("Password must be at least 6 characters");
+        }
+
         const { error } = await supabase.auth.updateUser({
           password: password,
         });
@@ -161,6 +180,8 @@ const Auth = () => {
         // Add a small delay to show the toast before redirecting
         setTimeout(() => {
           setMode("signin");
+          // Clear the URL parameters
+          window.history.replaceState({}, document.title, window.location.pathname);
         }, 1500);
       }
     } catch (err: any) {
@@ -202,9 +223,9 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <img 
-              src="/lovable-uploads/ff1eabe6-7fde-4229-8d7f-5e5d7e495d5b.png" 
+              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
               alt="IRMAI Logo" 
-              className="h-12 mx-auto mb-4"
+              className="h-16 mx-auto mb-4"
             />
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
             <p className="text-gray-500">Secure access to your dashboard</p>
@@ -214,15 +235,15 @@ const Auth = () => {
             <div className="flex mb-6">
               <button 
                 className={`flex-1 py-3 ${!isSignUpMode() ? 'text-gray-500 bg-gray-50' : 'bg-gray-100 font-medium'}`}
-                onClick={() => setMode("signin")}
-              >
-                Login
-              </button>
-              <button 
-                className={`flex-1 py-3 ${isSignUpMode() ? 'text-gray-500 bg-gray-50' : 'bg-gray-100 font-medium'}`}
                 onClick={() => setMode("signup")}
               >
                 Register
+              </button>
+              <button 
+                className={`flex-1 py-3 ${isSignUpMode() ? 'text-gray-500 bg-gray-50' : 'bg-gray-100 font-medium'}`}
+                onClick={() => setMode("signin")}
+              >
+                Login
               </button>
             </div>
             
@@ -242,24 +263,30 @@ const Auth = () => {
                 />
               </div>
               <div>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                  />
+                </div>
               </div>
               <div>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                  />
+                </div>
               </div>
               
               <Button 
@@ -314,9 +341,9 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <img 
-              src="/lovable-uploads/ff1eabe6-7fde-4229-8d7f-5e5d7e495d5b.png" 
+              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
               alt="IRMAI Logo" 
-              className="h-12 mx-auto mb-4"
+              className="h-16 mx-auto mb-4"
             />
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Magic Link Login</h1>
             <p className="text-gray-500">Enter your email to receive a sign in link</p>
@@ -331,14 +358,17 @@ const Auth = () => {
             
             <form onSubmit={handleAuth} className="space-y-4">
               <div>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                  />
+                </div>
               </div>
               
               <Button 
@@ -375,9 +405,9 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <img 
-              src="/lovable-uploads/ff1eabe6-7fde-4229-8d7f-5e5d7e495d5b.png" 
+              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
               alt="IRMAI Logo" 
-              className="h-12 mx-auto mb-4"
+              className="h-16 mx-auto mb-4"
             />
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
             <p className="text-gray-500">Enter your email to receive a password reset link</p>
@@ -392,14 +422,17 @@ const Auth = () => {
             
             <form onSubmit={handleAuth} className="space-y-4">
               <div>
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                  />
+                </div>
               </div>
               
               <Button 
@@ -436,9 +469,9 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <img 
-              src="/lovable-uploads/ff1eabe6-7fde-4229-8d7f-5e5d7e495d5b.png" 
+              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
               alt="IRMAI Logo" 
-              className="h-12 mx-auto mb-4"
+              className="h-16 mx-auto mb-4"
             />
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Update Password</h1>
             <p className="text-gray-500">Create a new password for your account</p>
@@ -453,26 +486,32 @@ const Auth = () => {
             
             <form onSubmit={handleAuth} className="space-y-4">
               <div>
-                <Input
-                  placeholder="New Password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                  minLength={6}
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="New Password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                    minLength={6}
+                  />
+                </div>
               </div>
               <div>
-                <Input
-                  placeholder="Confirm Password"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12 w-full"
-                  required
-                  minLength={6}
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <Input
+                    placeholder="Confirm Password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="h-12 w-full pl-10"
+                    required
+                    minLength={6}
+                  />
+                </div>
               </div>
               
               <Button 
@@ -500,9 +539,9 @@ const Auth = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <img 
-            src="/lovable-uploads/ff1eabe6-7fde-4229-8d7f-5e5d7e495d5b.png" 
+            src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
             alt="IRMAI Logo" 
-            className="h-12 mx-auto mb-4"
+            className="h-16 mx-auto mb-4"
           />
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
           <p className="text-gray-500">Secure access to your dashboard</p>
@@ -532,24 +571,30 @@ const Auth = () => {
           
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
-              <Input
-                placeholder="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12 w-full"
-                required
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 w-full pl-10"
+                  required
+                />
+              </div>
             </div>
             <div>
-              <Input
-                placeholder="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-12 w-full"
-                required
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 w-full pl-10"
+                  required
+                />
+              </div>
             </div>
             
             <Button 
