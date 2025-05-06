@@ -50,7 +50,7 @@ const Auth = () => {
   // Redirect to external URL if already logged in
   useEffect(() => {
     if (user) {
-      window.location.href = EXTERNAL_REDIRECT_URL;
+      window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user]);
 
@@ -98,7 +98,7 @@ const Auth = () => {
         }
         
         // Redirect to external URL
-        window.location.href = EXTERNAL_REDIRECT_URL;
+        window.location.replace(EXTERNAL_REDIRECT_URL);
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -183,7 +183,7 @@ const Auth = () => {
 
         // Add a small delay to show the toast before redirecting to external URL
         setTimeout(() => {
-          window.location.href = EXTERNAL_REDIRECT_URL;
+          window.location.replace(EXTERNAL_REDIRECT_URL);
         }, 1500);
       }
     } catch (err: any) {

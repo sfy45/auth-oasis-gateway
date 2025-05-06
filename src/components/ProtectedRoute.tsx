@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     // Redirect to external URL if authenticated
     if (user && !isLoading) {
-      window.location.href = EXTERNAL_REDIRECT_URL;
+      window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user, isLoading]);
 

@@ -24,17 +24,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, currentSession) => {
+        console.log("Auth state changed:", _event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setIsLoading(false);
+        
+        // Redirect authenticated users to external URL
+        if (currentSession?.user && window.location.pathname !== "/auth") {
+          window.location.replace(EXTERNAL_REDIRECT_URL);
+        }
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Existing session check:", session ? "Session exists" : "No session");
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
+      
+      // Redirect authenticated users to external URL
+      if (session?.user && window.location.pathname !== "/auth") {
+        window.location.replace(EXTERNAL_REDIRECT_URL);
+      }
     });
 
     return () => subscription.unsubscribe();

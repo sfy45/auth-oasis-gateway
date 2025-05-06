@@ -35,7 +35,8 @@ const Index = () => {
   // Redirect to external URL if authenticated
   useEffect(() => {
     if (user && !isLoading) {
-      window.location.href = EXTERNAL_REDIRECT_URL;
+      console.log("Redirecting to external URL from Index page");
+      window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user, isLoading]);
 
