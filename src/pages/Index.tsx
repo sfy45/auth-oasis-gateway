@@ -1,5 +1,6 @@
 
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import DashboardSidebar from "@/components/DashboardSidebar";
@@ -10,6 +11,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
   const { addNotification } = useNotifications();
 
   // Add login notification
