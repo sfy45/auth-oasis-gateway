@@ -3,6 +3,9 @@ import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
+// External URL for redirection
+const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
@@ -13,7 +16,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     // Redirect to external URL if authenticated
     if (user && !isLoading) {
-      window.location.href = "http://132.196.152.53:8501/";
+      window.location.href = EXTERNAL_REDIRECT_URL;
     }
   }, [user, isLoading]);
 

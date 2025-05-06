@@ -2,7 +2,9 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+
+// External URL for redirection
+const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
 
 interface AuthContextType {
   user: User | null;

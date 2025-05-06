@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "signin" | "signup" | "magic" | "reset" | "update-password";
+
+// External URL for redirection after successful authentication
+const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
 
 const Auth = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -48,8 +50,7 @@ const Auth = () => {
   // Redirect to external URL if already logged in
   useEffect(() => {
     if (user) {
-      // Redirect to external URL instead of dashboard
-      window.location.href = "http://132.196.152.53:8501/";
+      window.location.href = EXTERNAL_REDIRECT_URL;
     }
   }, [user]);
 
@@ -63,7 +64,7 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithOtp({
           email,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: EXTERNAL_REDIRECT_URL,
           },
         });
 
@@ -84,7 +85,6 @@ const Auth = () => {
         // Add notification if we have user data
         if (data.user) {
           try {
-            // We can't use the hook here since we're not in the provider context yet
             await supabase.from("irmai_notifications").insert({
               user_id: data.user.id,
               title: "Sign In Successful",
@@ -97,14 +97,14 @@ const Auth = () => {
           }
         }
         
-        // Redirect to external URL instead of dashboard
-        window.location.href = "http://132.196.152.53:8501/";
+        // Redirect to external URL
+        window.location.href = EXTERNAL_REDIRECT_URL;
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth`,
+            emailRedirectTo: EXTERNAL_REDIRECT_URL,
             data: {
               full_name: name || "",
               avatar_url: "",
@@ -181,11 +181,9 @@ const Auth = () => {
           description: "Your password has been updated successfully",
         });
 
-        // Add a small delay to show the toast before redirecting
+        // Add a small delay to show the toast before redirecting to external URL
         setTimeout(() => {
-          setMode("signin");
-          // Clear the URL parameters
-          window.history.replaceState({}, document.title, window.location.pathname);
+          window.location.href = EXTERNAL_REDIRECT_URL;
         }, 1500);
       }
     } catch (err: any) {
@@ -203,8 +201,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          // Redirect to external URL after Google sign-in
-          redirectTo: "http://132.196.152.53:8501/",
+          redirectTo: EXTERNAL_REDIRECT_URL,
         }
       });
       
