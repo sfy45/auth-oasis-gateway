@@ -107,7 +107,7 @@ const NotificationDropdown = () => {
                 <div className="mr-3">{getNotificationIcon(notification.type)}</div>
                 <div className="flex-1">
                   <p className={`text-sm ${!notification.read ? "font-medium" : ""}`}>
-                    {notification.message}
+                    {notification.title || notification.description}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {formatDistanceToNow(new Date(notification.created_at), {

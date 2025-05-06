@@ -83,9 +83,10 @@ const Auth = () => {
         if (data.user) {
           try {
             // We can't use the hook here since we're not in the provider context yet
-            await supabase.from("notifications").insert({
+            await supabase.from("irmai_notifications").insert({
               user_id: data.user.id,
-              message: "You have successfully signed in",
+              title: "Sign In Successful",
+              description: "You have successfully signed in",
               type: "success",
               read: false,
             });

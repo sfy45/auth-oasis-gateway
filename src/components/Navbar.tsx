@@ -95,7 +95,7 @@ const Navbar = () => {
           description: "You have been unsubscribed from updates",
         });
 
-        addNotification("You have unsubscribed from updates", "info");
+        addNotification("Unsubscription", "You have unsubscribed from updates", "info");
         
         setIsSubscribed(false);
       } else {
@@ -114,7 +114,7 @@ const Navbar = () => {
           description: "You have been subscribed to updates",
         });
 
-        addNotification("You have subscribed to updates", "subscription");
+        addNotification("Subscription", "You have subscribed to updates", "subscription");
         
         // Call send-email function
         try {
@@ -150,7 +150,7 @@ const Navbar = () => {
     // Add notification before signing out
     if (user) {
       try {
-        await addNotification("You have been signed out", "info");
+        await addNotification("Sign Out", "You have been signed out", "info");
       } catch (error) {
         console.error("Error adding sign out notification:", error);
       }

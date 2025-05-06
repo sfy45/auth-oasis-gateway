@@ -6,16 +6,18 @@ import { useToast } from "@/hooks/use-toast";
 
 export interface Notification {
   id: string;
-  message: string;
+  title: string;
+  description: string;
   type: string;
   read: boolean;
   created_at: string;
+  user_id: string;
 }
 
 interface NotificationsContextType {
   notifications: Notification[];
   unreadCount: number;
-  addNotification: (message: string, type: string) => Promise<void>;
+  addNotification: (title: string, description: string, type: string) => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
 }
@@ -40,7 +42,7 @@ export const NotificationsProvider = ({ children }: { children: React.ReactNode 
 
     try {
       const { data, error } = await supabase
-        .from("notifications")
+        .from("irmai_notifications")
         .select("*")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
@@ -52,13 +54,14 @@ export const NotificationsProvider = ({ children }: { children: React.ReactNode 
     }
   };
 
-  const addNotification = async (message: string, type: string) => {
+  const addNotification = async (title: string, description: string, type: string) => {
     if (!user) return;
 
     try {
-      const { error } = await supabase.from("notifications").insert({
+      const { error } = await supabase.from("irmai_notifications").insert({
         user_id: user.id,
-        message,
+        title,
+        description,
         type,
         read: false,
       });
@@ -71,7 +74,7 @@ export const NotificationsProvider = ({ children }: { children: React.ReactNode 
       // Show toast notification
       toast({
         title: type.charAt(0).toUpperCase() + type.slice(1),
-        description: message,
+        description: description,
       });
     } catch (error) {
       console.error("Error adding notification:", error);
@@ -81,7 +84,7 @@ export const NotificationsProvider = ({ children }: { children: React.ReactNode 
   const markAsRead = async (id: string) => {
     try {
       const { error } = await supabase
-        .from("notifications")
+        .from("irmai_notifications")
         .update({ read: true })
         .eq("id", id);
 
@@ -101,7 +104,7 @@ export const NotificationsProvider = ({ children }: { children: React.ReactNode 
 
     try {
       const { error } = await supabase
-        .from("notifications")
+        .from("irmai_notifications")
         .update({ read: true })
         .eq("user_id", user.id)
         .eq("read", false);
