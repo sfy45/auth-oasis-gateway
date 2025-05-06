@@ -19,7 +19,7 @@ const Index = () => {
     const addLoginNotification = async () => {
       if (user) {
         try {
-          await addNotification("Welcome to your dashboard", "success");
+          await addNotification("Welcome", "Welcome to your dashboard", "success");
         } catch (error) {
           console.error("Error adding login notification:", error);
         }
