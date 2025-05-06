@@ -11,8 +11,8 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// External URL for redirection
-const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
+// Domain-based URL for redirection instead of IP address
+const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +21,7 @@ const App = () => {
   const hasAuthHash = window.location.hash && window.location.hash.includes("access_token");
   
   if (hasAuthHash) {
-    console.log("Auth hash detected in URL, redirecting to external URL");
+    console.log("Auth hash detected in URL, redirecting to external domain");
     window.location.replace(EXTERNAL_REDIRECT_URL);
     return null;
   }

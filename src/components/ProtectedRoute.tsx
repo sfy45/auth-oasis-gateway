@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
-// External URL for redirection
-const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
+// Domain-based URL for redirection instead of IP address
+const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   useEffect(() => {
     // Redirect to external URL if authenticated
     if (user && !isLoading) {
+      console.log("ProtectedRoute: Redirecting authenticated user to external domain");
       window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user, isLoading]);

@@ -9,8 +9,8 @@ import DashboardInsightCard from "@/components/DashboardInsightCard";
 import { Shield, AlertTriangle, CheckCircle, Activity, DollarSign, FileBarChart } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 
-// External URL for redirection
-const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
+// Domain-based URL for redirection instead of IP address
+const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
@@ -35,7 +35,7 @@ const Index = () => {
   // Redirect to external URL if authenticated
   useEffect(() => {
     if (user && !isLoading) {
-      console.log("Redirecting to external URL from Index page");
+      console.log("Redirecting to external domain from Index page");
       window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user, isLoading]);

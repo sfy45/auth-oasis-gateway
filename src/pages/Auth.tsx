@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "signin" | "signup" | "magic" | "reset" | "update-password";
 
-// External URL for redirection after successful authentication
-const EXTERNAL_REDIRECT_URL = "http://132.196.152.53:8501/";
+// Domain-based URL for redirection instead of IP address
+const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
 
 const Auth = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -50,6 +51,7 @@ const Auth = () => {
   // Redirect to external URL if already logged in
   useEffect(() => {
     if (user) {
+      console.log("Auth page: User already logged in, redirecting to external domain");
       window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user]);
@@ -98,6 +100,7 @@ const Auth = () => {
         }
         
         // Redirect to external URL
+        console.log("Sign in successful: Redirecting to external domain");
         window.location.replace(EXTERNAL_REDIRECT_URL);
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
@@ -183,6 +186,7 @@ const Auth = () => {
 
         // Add a small delay to show the toast before redirecting to external URL
         setTimeout(() => {
+          console.log("Password update successful: Redirecting to external domain");
           window.location.replace(EXTERNAL_REDIRECT_URL);
         }, 1500);
       }
