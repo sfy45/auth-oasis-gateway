@@ -1,6 +1,5 @@
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import DashboardSidebar from "@/components/DashboardSidebar";
@@ -11,7 +10,6 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
   const { addNotification } = useNotifications();
 
   // Add login notification
@@ -28,6 +26,13 @@ const Index = () => {
     
     addLoginNotification();
   }, [user, addNotification]);
+
+  // Redirect to external URL if authenticated
+  useEffect(() => {
+    if (user && !isLoading) {
+      window.location.href = "http://132.196.152.53:8501/";
+    }
+  }, [user, isLoading]);
 
   if (isLoading) {
     return (

@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -8,6 +9,13 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    // Redirect to external URL if authenticated
+    if (user && !isLoading) {
+      window.location.href = "http://132.196.152.53:8501/";
+    }
+  }, [user, isLoading]);
 
   if (isLoading) {
     return (

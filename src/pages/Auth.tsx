@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -20,15 +20,9 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-
-  // Redirect to dashboard if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
 
   // Extract token from URL for password reset
   useEffect(() => {
@@ -50,6 +44,14 @@ const Auth = () => {
     
     checkForResetToken();
   }, [toast]);
+
+  // Redirect to external URL if already logged in
+  useEffect(() => {
+    if (user) {
+      // Redirect to external URL instead of dashboard
+      window.location.href = "http://132.196.152.53:8501/";
+    }
+  }, [user]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +97,8 @@ const Auth = () => {
           }
         }
         
-        navigate("/");
+        // Redirect to external URL instead of dashboard
+        window.location.href = "http://132.196.152.53:8501/";
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -200,7 +203,8 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin,
+          // Redirect to external URL after Google sign-in
+          redirectTo: "http://132.196.152.53:8501/",
         }
       });
       
