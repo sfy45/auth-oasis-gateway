@@ -221,17 +221,17 @@ const Auth = () => {
     if (isSignUpMode()) {
       return (
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <img 
-              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
-              alt="IRMAI Logo" 
-              className="h-16 mx-auto mb-4"
-            />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
-            <p className="text-gray-500">Secure access to your dashboard</p>
-          </div>
-          
           <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-center mb-8">
+              <img 
+                src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
+                alt="IRMAI Logo" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
+              <p className="text-gray-500">Secure access to your dashboard</p>
+            </div>
+            
             <div className="flex mb-6">
               <button 
                 className={`flex-1 py-3 ${!isSignUpMode() ? 'text-gray-500 bg-gray-50' : 'bg-gray-100 font-medium'}`}
@@ -339,17 +339,17 @@ const Auth = () => {
     if (isMagicLinkMode()) {
       return (
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <img 
-              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
-              alt="IRMAI Logo" 
-              className="h-16 mx-auto mb-4"
-            />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Magic Link Login</h1>
-            <p className="text-gray-500">Enter your email to receive a sign in link</p>
-          </div>
-          
           <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-center mb-8">
+              <img 
+                src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
+                alt="IRMAI Logo" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Magic Link Login</h1>
+              <p className="text-gray-500">Enter your email to receive a sign in link</p>
+            </div>
+            
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertDescription>{error}</AlertDescription>
@@ -403,17 +403,17 @@ const Auth = () => {
     if (isResetMode()) {
       return (
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <img 
-              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
-              alt="IRMAI Logo" 
-              className="h-16 mx-auto mb-4"
-            />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
-            <p className="text-gray-500">Enter your email to receive a password reset link</p>
-          </div>
-          
           <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-center mb-8">
+              <img 
+                src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
+                alt="IRMAI Logo" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
+              <p className="text-gray-500">Enter your email to receive a password reset link</p>
+            </div>
+            
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertDescription>{error}</AlertDescription>
@@ -467,17 +467,17 @@ const Auth = () => {
     if (isUpdatePasswordMode()) {
       return (
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <img 
-              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
-              alt="IRMAI Logo" 
-              className="h-16 mx-auto mb-4"
-            />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Update Password</h1>
-            <p className="text-gray-500">Create a new password for your account</p>
-          </div>
-          
           <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="text-center mb-8">
+              <img 
+                src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
+                alt="IRMAI Logo" 
+                className="h-16 mx-auto mb-4"
+              />
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Update Password</h1>
+              <p className="text-gray-500">Create a new password for your account</p>
+            </div>
+            
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertDescription>{error}</AlertDescription>
@@ -537,17 +537,17 @@ const Auth = () => {
     // Default is sign in mode
     return (
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <img 
-            src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
-            alt="IRMAI Logo" 
-            className="h-16 mx-auto mb-4"
-          />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
-          <p className="text-gray-500">Secure access to your dashboard</p>
-        </div>
-        
         <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="text-center mb-8">
+            <img 
+              src="/lovable-uploads/70c9d220-4e64-4354-8056-e164800722d0.png" 
+              alt="IRMAI Logo" 
+              className="h-16 mx-auto mb-4"
+            />
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to IRMAI</h1>
+            <p className="text-gray-500">Secure access to your dashboard</p>
+          </div>
+          
           <div className="flex mb-6">
             <button 
               className={`flex-1 py-3 ${isSignInMode() ? 'bg-gray-100 font-medium' : 'text-gray-500 bg-gray-50'}`}

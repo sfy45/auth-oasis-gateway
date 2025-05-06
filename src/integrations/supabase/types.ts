@@ -9,28 +9,31 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      notifications: {
+      irmai_notifications: {
         Row: {
           created_at: string
+          description: string | null
           id: string
-          message: string
           read: boolean
+          title: string | null
           type: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
-          message: string
           read?: boolean
+          title?: string | null
           type: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
-          message?: string
           read?: boolean
+          title?: string | null
           type?: string
           user_id?: string
         }
@@ -65,6 +68,8 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          interests: string | null
+          name: string | null
           updated_at: string
           user_id: string
         }
@@ -72,6 +77,8 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          interests?: string | null
+          name?: string | null
           updated_at?: string
           user_id: string
         }
@@ -79,6 +86,8 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          interests?: string | null
+          name?: string | null
           updated_at?: string
           user_id?: string
         }
