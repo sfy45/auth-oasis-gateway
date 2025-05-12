@@ -21,6 +21,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
+    // Check for auth hash in URL and redirect if needed
+    const hasAuthHash = window.location.hash && window.location.hash.includes("access_token");
+    
+    if (hasAuthHash) {
+      console.log("Auth hash detected in URL, redirecting to external IP");
+      window.location.replace(EXTERNAL_REDIRECT_URL);
+      return;
+    }
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, currentSession) => {
@@ -30,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(false);
         
         // Redirect authenticated users to external URL
-        if (currentSession?.user && window.location.pathname !== "/auth") {
+        if (currentSession?.user) {
           console.log("Auth state change: Redirecting to external IP");
           window.location.replace(EXTERNAL_REDIRECT_URL);
         }
@@ -45,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
       
       // Redirect authenticated users to external URL
-      if (session?.user && window.location.pathname !== "/auth") {
+      if (session?.user) {
         console.log("Existing session: Redirecting to external IP");
         window.location.replace(EXTERNAL_REDIRECT_URL);
       }

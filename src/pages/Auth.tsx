@@ -42,6 +42,12 @@ const Auth = () => {
           description: "We've sent you a password reset link",
         });
       }
+
+      // Check for auth hash and redirect if needed
+      if (window.location.hash && window.location.hash.includes("access_token")) {
+        console.log("Auth page: Auth hash detected in URL, redirecting to external IP");
+        window.location.replace(EXTERNAL_REDIRECT_URL);
+      }
     };
     
     checkForResetToken();
