@@ -37,6 +37,30 @@ const createEmailTemplate = (type: string, data: any) => {
           <p>Best regards,<br>IRMAI Team</p>
         `,
       };
+    case "login":
+      return {
+        subject: "Login Confirmation - IRMAI",
+        html: `
+          <h1>Login Confirmation</h1>
+          <p>Hello ${data.email},</p>
+          <p>We are confirming that you have successfully logged into your IRMAI account.</p>
+          <p>You will soon be redirected to your dashboard at <a href="http://34.45.239.136:8501/">http://34.45.239.136:8501/</a>.</p>
+          <p>If you did not initiate this login, please secure your account immediately by changing your password.</p>
+          <p>Best regards,<br>IRMAI Team</p>
+        `,
+      };
+    case "magic-link":
+      return {
+        subject: "Magic Link Confirmation - IRMAI",
+        html: `
+          <h1>Magic Link Confirmation</h1>
+          <p>Hello ${data.email},</p>
+          <p>We've sent you a magic link to log in to your IRMAI account.</p>
+          <p>Please check your inbox for the login link which will redirect you to <a href="http://34.45.239.136:8501/">http://34.45.239.136:8501/</a>.</p>
+          <p>If you did not request this login method, please ignore this email or contact our support team.</p>
+          <p>Best regards,<br>IRMAI Team</p>
+        `,
+      };
     case "password-reset":
       return {
         subject: "Password Reset Request - IRMAI",
@@ -44,6 +68,7 @@ const createEmailTemplate = (type: string, data: any) => {
           <h1>Password Reset Request</h1>
           <p>Hello,</p>
           <p>We received a request to reset your password for your IRMAI account. Click on the link in your other email to reset your password.</p>
+          <p>After resetting your password, you will be redirected to <a href="http://34.45.239.136:8501/">http://34.45.239.136:8501/</a>.</p>
           <p>If you did not request this change, please contact our support team immediately.</p>
           <p>Best regards,<br>IRMAI Team</p>
         `,

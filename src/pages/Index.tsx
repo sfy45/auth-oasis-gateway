@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,8 +8,8 @@ import DashboardInsightCard from "@/components/DashboardInsightCard";
 import { Shield, AlertTriangle, CheckCircle, Activity, DollarSign, FileBarChart } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 
-// Domain-based URL for redirection instead of IP address
-const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
+// Redirect URL updated to the new IP address
+const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 const Index = () => {
   const { user, isLoading } = useAuth();
@@ -35,7 +34,7 @@ const Index = () => {
   // Redirect to external URL if authenticated
   useEffect(() => {
     if (user && !isLoading) {
-      console.log("Redirecting to external domain from Index page");
+      console.log("Redirecting to external IP from Index page");
       window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user, isLoading]);
@@ -63,10 +62,8 @@ const Index = () => {
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             {/* Dashboard Header */}
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Real-time insights and analytics for operational risk management</p>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
+            <p className="text-gray-600 mb-6">Real-time insights and analytics for operational risk management</p>
             
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">

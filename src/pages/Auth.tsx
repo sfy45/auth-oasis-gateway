@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "signin" | "signup" | "magic" | "reset" | "update-password";
 
-// Domain-based URL for redirection instead of IP address
-const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
+// Redirect URL updated to the new IP address
+const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 const Auth = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
@@ -51,7 +50,7 @@ const Auth = () => {
   // Redirect to external URL if already logged in
   useEffect(() => {
     if (user) {
-      console.log("Auth page: User already logged in, redirecting to external domain");
+      console.log("Auth page: User already logged in, redirecting to external IP");
       window.location.replace(EXTERNAL_REDIRECT_URL);
     }
   }, [user]);
@@ -76,6 +75,21 @@ const Auth = () => {
           title: "Magic link sent",
           description: "Check your email for the login link",
         });
+        
+        // Send confirmation email for magic link login
+        try {
+          const { error: emailError } = await supabase.functions.invoke("send-email", {
+            body: {
+              type: "magic-link",
+              recipients: [{ email: email }],
+              data: { email: email }
+            }
+          });
+          
+          if (emailError) console.error("Error sending magic link confirmation:", emailError);
+        } catch (emailError) {
+          console.error("Error sending magic link confirmation:", emailError);
+        }
       } else if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -99,8 +113,23 @@ const Auth = () => {
           }
         }
         
+        // Send login confirmation email
+        try {
+          const { error: emailError } = await supabase.functions.invoke("send-email", {
+            body: {
+              type: "login",
+              recipients: [{ email: email }],
+              data: { email: email }
+            }
+          });
+          
+          if (emailError) console.error("Error sending login confirmation:", emailError);
+        } catch (emailError) {
+          console.error("Error sending login confirmation:", emailError);
+        }
+        
         // Redirect to external URL
-        console.log("Sign in successful: Redirecting to external domain");
+        console.log("Sign in successful: Redirecting to external IP");
         window.location.replace(EXTERNAL_REDIRECT_URL);
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
@@ -186,7 +215,7 @@ const Auth = () => {
 
         // Add a small delay to show the toast before redirecting to external URL
         setTimeout(() => {
-          console.log("Password update successful: Redirecting to external domain");
+          console.log("Password update successful: Redirecting to external IP");
           window.location.replace(EXTERNAL_REDIRECT_URL);
         }, 1500);
       }

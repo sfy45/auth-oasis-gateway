@@ -3,8 +3,8 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-// Domain-based URL for redirection instead of IP address
-const EXTERNAL_REDIRECT_URL = "https://app.irmai.io/";
+// Redirect URL updated to the new IP address
+const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 interface AuthContextType {
   user: User | null;
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Redirect authenticated users to external URL
         if (currentSession?.user && window.location.pathname !== "/auth") {
-          console.log("Auth state change: Redirecting to external domain");
+          console.log("Auth state change: Redirecting to external IP");
           window.location.replace(EXTERNAL_REDIRECT_URL);
         }
       }
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Redirect authenticated users to external URL
       if (session?.user && window.location.pathname !== "/auth") {
-        console.log("Existing session: Redirecting to external domain");
+        console.log("Existing session: Redirecting to external IP");
         window.location.replace(EXTERNAL_REDIRECT_URL);
       }
     });
