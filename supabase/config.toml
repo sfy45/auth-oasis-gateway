@@ -1,4 +1,4 @@
 
 project_id = "vyorrvkkeclwxjhzefyu"
 
-# Removing the email verification function to use Supabase default templates
+# Using Supabase default templates for auth emails
