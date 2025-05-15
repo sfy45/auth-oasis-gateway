@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 // Redirect URL updated to the IP address
 const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
@@ -26,7 +27,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     
     if (hasAuthHash) {
       console.log("Auth hash detected in URL, redirecting to external IP");
-      window.location.replace(EXTERNAL_REDIRECT_URL);
+      // Show a notification toast before redirecting
+      toast({
+        title: "Authentication successful",
+        description: "Redirecting to your dashboard...",
+      });
+      
+      // Add a small delay before redirect to allow toast to show
+      setTimeout(() => {
+        window.location.replace(EXTERNAL_REDIRECT_URL);
+      }, 1500);
       return;
     }
     
@@ -41,7 +51,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Redirect authenticated users to external URL
         if (currentSession?.user) {
           console.log("Auth state change: Redirecting to external IP");
-          window.location.replace(EXTERNAL_REDIRECT_URL);
+          
+          // Show a notification toast before redirecting
+          toast({
+            title: "Authentication successful",
+            description: "Redirecting to your dashboard...",
+          });
+          
+          // Add a small delay before redirect to allow toast to show
+          setTimeout(() => {
+            window.location.replace(EXTERNAL_REDIRECT_URL);
+          }, 1500);
         }
       }
     );
@@ -56,7 +76,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Redirect authenticated users to external URL
       if (session?.user) {
         console.log("Existing session: Redirecting to external IP");
-        window.location.replace(EXTERNAL_REDIRECT_URL);
+        
+        // Show a notification toast before redirecting
+        toast({
+          title: "Authentication successful",
+          description: "Redirecting to your dashboard...",
+        });
+        
+        // Add a small delay before redirect to allow toast to show
+        setTimeout(() => {
+          window.location.replace(EXTERNAL_REDIRECT_URL);
+        }, 1500);
       }
     });
 
@@ -65,6 +95,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    toast({
+      title: "Signed out",
+      description: "You have been signed out successfully.",
+    });
   };
 
   const value = {

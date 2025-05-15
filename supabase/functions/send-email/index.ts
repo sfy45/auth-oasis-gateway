@@ -116,7 +116,7 @@ serve(async (req) => {
     
     const emailPromises = recipients.map(recipient => 
       resend.emails.send({
-        from: "IRMAI <onboarding@resend.dev>", // Using Resend's default verified domain
+        from: "IRMAI <noreply@irmai.io>", // Using your verified domain
         to: [recipient.email],
         subject: template.subject,
         html: template.html,
