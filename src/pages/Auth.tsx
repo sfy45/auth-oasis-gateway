@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "signin" | "signup" | "magic" | "reset" | "update-password";
 
-// Redirect URL updated to the new IP address
+// Redirect URL updated to the IP address
 const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 const Auth = () => {
@@ -81,21 +81,6 @@ const Auth = () => {
           title: "Magic link sent",
           description: "Check your email for the login link",
         });
-        
-        // Send confirmation email for magic link login
-        try {
-          const { error: emailError } = await supabase.functions.invoke("send-email", {
-            body: {
-              type: "magic-link",
-              recipients: [{ email: email }],
-              data: { email: email }
-            }
-          });
-          
-          if (emailError) console.error("Error sending magic link confirmation:", emailError);
-        } catch (emailError) {
-          console.error("Error sending magic link confirmation:", emailError);
-        }
       } else if (mode === "signin") {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -103,36 +88,6 @@ const Auth = () => {
         });
         
         if (error) throw error;
-        
-        // Add notification if we have user data
-        if (data.user) {
-          try {
-            await supabase.from("irmai_notifications").insert({
-              user_id: data.user.id,
-              title: "Sign In Successful",
-              description: "You have successfully signed in",
-              type: "success",
-              read: false,
-            });
-          } catch (notifError) {
-            console.error("Error adding signin notification:", notifError);
-          }
-        }
-        
-        // Send login confirmation email
-        try {
-          const { error: emailError } = await supabase.functions.invoke("send-email", {
-            body: {
-              type: "login",
-              recipients: [{ email: email }],
-              data: { email: email }
-            }
-          });
-          
-          if (emailError) console.error("Error sending login confirmation:", emailError);
-        } catch (emailError) {
-          console.error("Error sending login confirmation:", emailError);
-        }
         
         // Redirect to external URL
         console.log("Sign in successful: Redirecting to external IP");
@@ -142,10 +97,10 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: EXTERNAL_REDIRECT_URL,
+            // Use Supabase's default email verification flow
+            emailRedirectTo: `${window.location.origin}/auth`,
             data: {
               full_name: name || "",
-              avatar_url: "",
             },
           },
         });
@@ -156,23 +111,6 @@ const Auth = () => {
           title: "Account created",
           description: "Please check your email to verify your account",
         });
-        
-        // Send welcome email
-        if (data.user) {
-          try {
-            const { error: emailError } = await supabase.functions.invoke("send-email", {
-              body: {
-                type: "welcome",
-                recipients: [{ email: email }],
-                data: { email: email }
-              }
-            });
-            
-            if (emailError) console.error("Error sending welcome email:", emailError);
-          } catch (emailError) {
-            console.error("Error sending welcome email:", emailError);
-          }
-        }
       } else if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/auth?reset=true`,
@@ -184,21 +122,6 @@ const Auth = () => {
           title: "Password reset email sent",
           description: "Check your email for the password reset link",
         });
-        
-        // Send password reset email
-        try {
-          const { error: emailError } = await supabase.functions.invoke("send-email", {
-            body: {
-              type: "password-reset",
-              recipients: [{ email: email }],
-              data: { email: email }
-            }
-          });
-          
-          if (emailError) console.error("Error sending reset email:", emailError);
-        } catch (emailError) {
-          console.error("Error sending reset email:", emailError);
-        }
       } else if (mode === "update-password") {
         if (password !== confirmPassword) {
           throw new Error("Passwords do not match");
@@ -219,10 +142,9 @@ const Auth = () => {
           description: "Your password has been updated successfully",
         });
 
-        // Add a small delay to show the toast before redirecting to external URL
+        // Add a small delay to show the toast before redirecting to login page
         setTimeout(() => {
-          console.log("Password update successful: Redirecting to external IP");
-          window.location.replace(EXTERNAL_REDIRECT_URL);
+          setMode("signin");
         }, 1500);
       }
     } catch (err: any) {

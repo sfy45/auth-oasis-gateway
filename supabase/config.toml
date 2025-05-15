@@ -1,6 +1,4 @@
 
 project_id = "vyorrvkkeclwxjhzefyu"
 
-[functions.send-email]
-verify_jwt = true
-
+# Removing the email verification function to use Supabase default templates

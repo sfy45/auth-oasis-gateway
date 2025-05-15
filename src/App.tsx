@@ -10,7 +10,7 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-// Redirect URL updated to the new IP address
+// Redirect URL updated to the IP address
 const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 const queryClient = new QueryClient();

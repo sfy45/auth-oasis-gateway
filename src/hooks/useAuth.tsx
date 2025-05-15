@@ -3,7 +3,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-// Redirect URL updated to the new IP address
+// Redirect URL updated to the IP address
 const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 interface AuthContextType {

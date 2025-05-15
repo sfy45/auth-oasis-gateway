@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
-// Redirect URL updated to the new IP address
+// Redirect URL updated to the IP address
 const EXTERNAL_REDIRECT_URL = "http://34.45.239.136:8501/";
 
 const Index = () => {
